@@ -13,8 +13,17 @@ services:
       - MYSQL_DATABASE=nodedb
       - MYSQL_ROOT_PASSWORD=admin
     networks:
-      - node_network
+        - api_network
+  
+  api:
+    build: 
+      context: nodejs
+    networks:
+        - api_network
+    volumes:
+        - ./nodejs:/usr/src/api
 
-  networks:
-    node_network:
-      driver: bridge
+
+networks:
+    api_network:
+        driver: bridge
