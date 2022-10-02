@@ -18,12 +18,28 @@ services:
   api:
     build: 
       context: nodejs
+    container_name: nodejs
+    tty: true
     networks:
         - api_network
     volumes:
         - ./nodejs:/usr/src/api
+    depends_on:
+        - db
 
+  nginx:
+    build:
+      context: nginx
+    container_name: nginx
+    networks:
+        - api_network
+    ports:
+        - '8080:80'
+    depends_on:
+        - api
 
 networks:
     api_network:
         driver: bridge
+
+
