@@ -23,7 +23,7 @@ services:
     networks:
         - api_network
     volumes:
-        - ./nodejs:/usr/src/api
+        - /usr/src/api
     depends_on:
         - db
 
