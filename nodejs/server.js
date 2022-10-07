@@ -12,25 +12,36 @@ const connection = mysql.createConnection({
     database: 'nodedb'
 })
 
-const clean_data = `
+const createTable = `
+    CREATE TABLE developers (
+        id int NOT NULL AUTO_INCREMENT,
+        first_name varchar(50),
+        last_name varchar(50),
+        age int,
+        role varchar(100),
+        PRIMARY KEY (id)
+    );
+`
+
+const cleanData = `
     DELETE 
     FROM
         developers;
 `
 
-const insert_data = `INSERT INTO developers (
+const insertData = `INSERT INTO developers (
     first_name,
     last_name,
-    role,
-    age
+    age,
+    role
 ) VALUES (
     'Andris',
     'Buscariolli',
-    'Software Developer',
-    33
+    33,
+    'Software Developer'
 )`
 
-const retrieve_data = `
+const retrieveData = `
     SELECT
         *
     FROM
@@ -41,14 +52,14 @@ connection.connect(err => {
     if (err) throw err
     console.log('Connected to the mysql')
 
-    connection.query(clean_data)
-
-    connection.query(insert_data, (err, result) => {
-        if (err) throw err
+    connection.query(cleanData)
+    connection.query(insertData, (err, result) => {
+        if (err) {
+            connection.query(createTable)
+        }
         console.log('New record inserted')
     })
-
-    connection.query(retrieve_data, (err, result, fields) => {
+    connection.query(retrieveData, (err, result, fields) => {
         if (err) throw err
         console.log(result);
         data = result;
