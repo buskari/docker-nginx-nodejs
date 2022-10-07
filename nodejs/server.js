@@ -5,7 +5,7 @@ const server = express()
 const PORT = 3001
 let data;
 
-const connection = mysql.createConnection({
+const db = mysql.createConnection({
     host: 'db',
     user: 'root',
     password: 'admin',
@@ -13,7 +13,7 @@ const connection = mysql.createConnection({
 })
 
 const createTable = `
-    CREATE TABLE developers (
+    CREATE TABLE IF NOT EXISTS developers (
         id int NOT NULL AUTO_INCREMENT,
         first_name varchar(50),
         last_name varchar(50),
@@ -48,18 +48,17 @@ const retrieveData = `
         developers;
 `
 
-connection.connect(err => {
+db.connect(err => {
     if (err) throw err
     console.log('Connected to the mysql')
-
-    connection.query(cleanData)
-    connection.query(insertData, (err, result) => {
-        if (err) {
-            connection.query(createTable)
-        }
+    
+    db.query(createTable)
+    db.query(cleanData)    
+    db.query(insertData, (err, result) => {
+        if (err) throw err
         console.log('New record inserted')
     })
-    connection.query(retrieveData, (err, result, fields) => {
+    db.query(retrieveData, (err, result) => {
         if (err) throw err
         console.log(result);
         data = result;
